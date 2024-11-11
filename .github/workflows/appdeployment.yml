@@ -111,7 +111,7 @@ jobs:
                     "Quantity": 0
                   }
                 },
-                "CachePolicyId": "658327ea-f89d-4fab-a63d-7e8866b0f51e"  # Domyślny CachePolicyId
+                "CachePolicyId": "658327ea-f89d-4fab-a63d-7e8866b0f51e" 
               },
               "Enabled": true,
               "DefaultRootObject": "${{ github.sha }}/frontend/index.html"
