@@ -77,10 +77,48 @@ jobs:
       - name: Create CloudFront Distribution
         run: |
           DISTRIBUTION_ID=$(aws cloudfront create-distribution \
-            --origin-domain-name frontendsolutionbucket.s3.amazonaws.com \
-            --default-root-object "${{ github.sha }}/frontend/index.html" \
-            --enabled \
-            --comment "Automated deployment for version ${{ github.sha }}" \
+            --distribution-config '{
+              "CallerReference": "${{ github.sha }}",
+              "Comment": "Automated deployment for version ${{ github.sha }}",
+              "Origins": {
+                "Items": [
+                  {
+                    "Id": "S3-frontendsolutionbucket",
+                    "DomainName": "frontendsolutionbucket.s3.amazonaws.com",
+                    "S3OriginConfig": {
+                      "OriginAccessIdentity": ""
+                    }
+                  }
+                ],
+                "Quantity": 1
+              },
+              "DefaultCacheBehavior": {
+                "TargetOriginId": "S3-frontendsolutionbucket",
+                "ViewerProtocolPolicy": "redirect-to-https",
+                "AllowedMethods": {
+                  "Items": ["GET", "HEAD"],
+                  "Quantity": 2
+                },
+                "CachedMethods": {
+                  "Items": ["GET", "HEAD"],
+                  "Quantity": 2
+                },
+                "ForwardedValues": {
+                  "QueryString": false,
+                  "Cookies": {
+                    "Forward": "none"
+                  },
+                  "Headers": {
+                    "Quantity": 0
+                  },
+                  "QueryStringCacheKeys": {
+                    "Quantity": 0
+                  }
+                }
+              },
+              "Enabled": true,
+              "DefaultRootObject": "${{ github.sha }}/frontend/index.html"
+            }' \
             --query 'Distribution.Id' --output text)
           echo "CloudFront Distribution ID: $DISTRIBUTION_ID"
           
