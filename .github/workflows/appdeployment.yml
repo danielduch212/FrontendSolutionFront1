@@ -47,7 +47,7 @@ jobs:
       # Download artifacts
       
       - name: Download Backend Artifacts
-        run: aws s3 cp ${{secrets.AWS_BACKEND_PATH}} ./backend/ --recursive
+        run: aws s3 cp s3://frontendsolutionbucket/backend/ ./backend/ --recursive
       
       - name: Download Frontend Artifacts
         uses: actions/download-artifact@v3
