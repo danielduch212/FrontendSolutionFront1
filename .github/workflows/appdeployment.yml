@@ -64,7 +64,7 @@ jobs:
           aws-region: ${{secrets.AWS_REGION}}
           
       - name: Download Backend Artifacts
-        run: aws s3 cp s3://frontendsolutionbucket/backend/ ./backend/ --recursive
+        run: aws s3 cp ${{secrets.AWS_S3_BACKEND_PATH}} ./backend/ --recursive
         
       - name: Upload hashed backend and frontend to S3
         run: |
