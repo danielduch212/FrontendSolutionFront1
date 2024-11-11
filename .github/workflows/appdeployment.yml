@@ -36,7 +36,9 @@ jobs:
       with: 
         name: Frontend Artifacts
         path: ./dist
-        
+
+    - name: Show Build Artifacts
+      run: ls -R ./dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
