@@ -107,13 +107,7 @@ jobs:
             --query 'Distribution.Id' --output text)
           echo "CloudFront Distribution ID: $DISTRIBUTION_ID"
           
-      # Optional: Invalidate CloudFront cache for the new distribution
-      - name: Invalidate CloudFront Cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id $DISTRIBUTION_ID \
-            --paths "/*"
-        
+      
 
   
     
