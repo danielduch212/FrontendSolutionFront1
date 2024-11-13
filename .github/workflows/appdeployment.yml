@@ -108,7 +108,7 @@ jobs:
       - name: Create Lambda
         run: |
           aws lambda create-function \
-            --function-name lambda@${{ github.sha }} \
+            --function-name lambda-${{ github.sha }} \
             --zip-file fileb://./backend/app-deployment-package.zip \
             --handler MyApp::MyApp.Function::FunctionHandler \
             --runtime dotnetcore3.1 \
@@ -125,10 +125,10 @@ jobs:
           aws apigatewayv2 create-route \
             --api-id $API_ID \
             --route-key "ANY /{proxy+}" \
-            --target "lambda://lambda@${{ github.sha }}"
+            --target "lambda://lambda-${{ github.sha }}"
 
           aws lambda add-permission \
-            --function-name lambda@${{ github.sha }} \
+            --function-name lambda-${{ github.sha }} \
             --principal apigateway.amazonaws.com \
             --statement-id "AllowAPIGatewayInvoke" \
             --action "lambda:InvokeFunction" \
