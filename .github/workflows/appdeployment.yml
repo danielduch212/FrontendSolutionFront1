@@ -111,7 +111,7 @@ jobs:
             --function-name lambda-${{ github.sha }} \
             --zip-file fileb://./backend/app-deployment-package.zip \
             --handler MyApp::MyApp.Function::FunctionHandler \
-            --runtime dotnetcore3.1 \
+            --runtime dotnet6 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
 
       #Create Api Gateway
