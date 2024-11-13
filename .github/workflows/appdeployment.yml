@@ -103,8 +103,47 @@ jobs:
             }' \
             --query 'Distribution.Id' --output text)
           echo "CloudFront Distribution ID: $DISTRIBUTION_ID"
-          
-      
+
+      #Create Lambda AspNet Core Server 
+      - name: Create Lambda
+        run: |
+          aws lambda create-function \
+            --function-name lambda@${{ github.sha }}  \
+            --zip-file fileb:// 
+            --handler MyApp::MyApp.Function::FunctionHandler \
+            --runtime dotnetcore3.1 \
+            --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
+
+      #Create Api Gateway
+      - name: Create Api Gateway
+        run: |
+          API_ID=$(aws apigatewayv2 create-api \
+            --name "Api-${{ github.sha }}" \
+            --protocol-type HTTP \
+            --query 'ApiId' --output text)
+
+          aws apigatewayv2 create-route \
+            --api-id $API_ID \
+            --route-key "ANY /{proxy+}" \
+            --target "lambda://lambda@${{ github.sha }}"
+
+          aws lambda add-permission \
+            --function-name lambda@${{ github.sha }} \
+            --principal apigateway.amazonaws.com \
+            --statement-id "AllowAPIGatewayInvoke" \
+            --action "lambda:InvokeFunction" \
+            --source-arn "arn:aws:execute-api:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:$API_ID/*/*/*"
+
+      - name: Deploy Api Gateway
+        run: |
+          aws apigatewayv2 create-deployment \
+            --api-id $API_ID \
+            --description "Deployment for version ${{ github.sha }}"
+
+      # Output API Gateway URL
+      - name: Output API Gateway URL
+        run: |
+          echo "API Gateway URL: https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com"
 
   
     
