@@ -108,8 +108,8 @@ jobs:
       - name: Create Lambda
         run: |
           aws lambda create-function \
-            --function-name lambda@${{ github.sha }}  \
-            --zip-file fileb:// ./backend/app-deployment-package.zip \
+            --function-name lambda@${{ github.sha }} \
+            --zip-file fileb://./backend/app-deployment-package.zip \
             --handler MyApp::MyApp.Function::FunctionHandler \
             --runtime dotnetcore3.1 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
