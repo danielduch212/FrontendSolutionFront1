@@ -51,7 +51,8 @@ jobs:
     - name: Update Api Uri in Angular Frontend Environment
       run: |
         sed -i "s|apiUrl: '.*'|apiUrl: '${{ env.API_GATEWAY_URL }}'|" src/environments/environment.ts
-
+        cat src/environments/environment.ts
+    
     - name: Build Angular app
       run: npm run build --prod
       
@@ -70,9 +71,8 @@ jobs:
 
     steps: 
       - uses: actions/checkout@v4
-
+      
       # Download artifacts
-
       
       - name: Download Frontend Artifacts
         uses: actions/download-artifact@v3
@@ -110,7 +110,10 @@ jobs:
                     "Id": "S3-frontendsolutionbucket",
                     "DomainName": "frontendsolutionbucket.s3.amazonaws.com",
                     "S3OriginConfig": {
-                      "OriginAccessControlId": "${{ secrets.AWS_OAC_ID }}"
+                      "OriginAccessIdentity":{
+                        "OriginAccessControlId": "${{ secrets.AWS_OAC_ID }}"
+                      }
+                      
                     }
                   }
                 ],
