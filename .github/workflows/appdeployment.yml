@@ -158,10 +158,17 @@ jobs:
             --api-id $API_ID \
             --description "Deployment for version ${{ github.sha }}"
 
+      - name: Create Api Gateway Stage
+        run: |
+          aws api gatewayv2 create-stage \
+            --api-id $API_ID \
+            --stage-name "prod" \
+            --deployment-id $(aws apigatewayv2 get-deployments --api-id $API_ID --query 'Items[0].DeploymentId' --output text)
+            
       # Output API Gateway URL
       - name: Output API Gateway URL
         run: |
-          echo "API Gateway URL: https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com"
+          echo "API Gateway URL: https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com/prod"
           
 
   
