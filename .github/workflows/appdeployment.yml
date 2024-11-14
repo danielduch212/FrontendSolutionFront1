@@ -114,19 +114,37 @@ jobs:
             --runtime dotnet6 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
 
-      #Create Api Gateway
-      - name: Create Api Gateway
+
+
+      #Create Api Gateway integration with lambda
+      - name: Create Api Gateway Integration 
         run: |
           API_ID=$(aws apigatewayv2 create-api \
             --name "Api-${{ github.sha }}" \
             --protocol-type HTTP \
             --query 'ApiId' --output text)
+            
+          INTEGRATION_ID=$(aws apigatewayv2 create-integration \
+            --api-id $API_ID \
+            --integration-type AWS_PROXY \
+            --integration-uri arn:aws:lambda:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:function:lambda-${{ github.sha }} \
+            --payload-format-version "2.0" \
+            --query 'IntegrationId' --output text)
 
+          echo "Api Gateway ID: $API_ID"
+          echo "Integration Id: $INTEGRATION_ID"
+          
+      #Create Api Gateway Route
+      - name: Create Api Gateway Route
+        run: |
           aws apigatewayv2 create-route \
             --api-id $API_ID \
             --route-key "ANY /{proxy+}" \
-            --target "lambda://lambda-${{ github.sha }}"
+            --target "integrations/$INTEGRATION_ID"
 
+      #Add permission to api gateway
+      - name: Add Permission to Api Gateway (Invoke Lambda)
+        run: |
           aws lambda add-permission \
             --function-name lambda-${{ github.sha }} \
             --principal apigateway.amazonaws.com \
