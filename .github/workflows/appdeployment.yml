@@ -24,7 +24,34 @@ jobs:
         
     - name: install dependencies
       run: npm install
+
+    # Create api gateway to pass api uri variable to environment.ts
     
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: check AWS OACs
+      run: aws cloudfront list-origin-access-controls 
+      
+    - name: Create Api Gateway
+      run: |
+        API_ID=$(aws apigatewayv2 create-api \
+          --name "Api-${{ github.sha }}" \
+          --protocol-type HTTP \
+          --query 'ApiId' --output text)
+        echo "API_ID=$API_ID" >> $GITHUB_ENV
+        echo "API Gateway URL: https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com/prod"
+        echo "API_GATEWAY_URL=https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com/prod" >> $GITHUB_ENV
+    
+    #change api uri variable
+    - name: Update Api Uri in Angular Frontend Environment
+      run: |
+        sed -i "s|apiUrl: '.*'|apiUrl: '${{ env.API_GATEWAY_URL }}'|" src/environments/environment.prod.ts
+
     - name: Build Angular app
       run: npm run build --prod
       
@@ -83,7 +110,7 @@ jobs:
                     "Id": "S3-frontendsolutionbucket",
                     "DomainName": "frontendsolutionbucket.s3.amazonaws.com",
                     "S3OriginConfig": {
-                      "OriginAccessIdentity": ""
+                      "OriginAccessControlId": ""
                     }
                   }
                 ],
@@ -131,7 +158,7 @@ jobs:
             --payload-format-version "2.0" \
             --query 'IntegrationId' --output text)
 
-          echo "API_ID=$API_ID" >> $GITHUB_ENV
+          
           echo "INTEGRATION_ID=$INTEGRATION_ID" >> $GITHUB_ENV
           
       #Create Api Gateway Route
@@ -172,7 +199,7 @@ jobs:
           
 
   
-      #
+      
 
 
           
