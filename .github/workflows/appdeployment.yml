@@ -131,8 +131,8 @@ jobs:
             --payload-format-version "2.0" \
             --query 'IntegrationId' --output text)
 
-          echo "Api Gateway ID: $API_ID" >> $GITHUB.ENV
-          echo "Integration Id: $INTEGRATION_ID" >> $GITHUB.ENV
+          echo "Api Gateway ID: $API_ID" >> $GITHUB_ENV
+          echo "Integration Id: $INTEGRATION_ID" >> $GITHUB_ENV
           
       #Create Api Gateway Route
       - name: Create Api Gateway Route
