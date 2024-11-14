@@ -44,8 +44,8 @@ jobs:
           --protocol-type HTTP \
           --query 'ApiId' --output text)
         echo "API_ID=$API_ID" >> $GITHUB_ENV
-        echo "API Gateway URL: https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com/prod"
-        echo "API_GATEWAY_URL=https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com/prod" >> $GITHUB_ENV
+        echo "API Gateway URL: https://${API_ID}.execute-api.${ secrets.AWS_REGION }.amazonaws.com/prod"
+        echo "API_GATEWAY_URL=https://${API_ID}.execute-api.${ secrets.AWS_REGION }.amazonaws.com/prod" >> $GITHUB_ENV
     
     #change api uri variable
     - name: Update Api Uri in Angular Frontend Environment
