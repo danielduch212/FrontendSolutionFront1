@@ -50,6 +50,7 @@ jobs:
     #change api uri variable
     - name: Update Api Uri in Angular Frontend Environment
       run: |
+        ls
         sed -i "s|apiUrl: '.*'|apiUrl: '${{ env.API_GATEWAY_URL }}'|" src/environments/environment.prod.ts
 
     - name: Build Angular app
