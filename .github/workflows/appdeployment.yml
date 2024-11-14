@@ -110,7 +110,7 @@ jobs:
                     "Id": "S3-frontendsolutionbucket",
                     "DomainName": "frontendsolutionbucket.s3.amazonaws.com",
                     "S3OriginConfig": {
-                      "OriginAccessControlId": ""
+                      "OriginAccessControlId": "${{secrets.AWS_OAC_ID}}"
                     }
                   }
                 ],
@@ -140,8 +140,6 @@ jobs:
             --handler MyApp::MyApp.Function::FunctionHandler \
             --runtime dotnet6 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
-
-
 
       #Create Api Gateway integration with lambda
       - name: Create Api Gateway Integration 
