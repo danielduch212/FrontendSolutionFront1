@@ -111,7 +111,7 @@ jobs:
                     "DomainName": "frontendsolutionbucket.s3.amazonaws.com",
                     "S3OriginConfig": {
                       "OriginAccessIdentity":{
-                        "OriginAccessControlId": "${{ secrets.AWS_OAC_ID }}"
+                        
                       }
                       
                     }
