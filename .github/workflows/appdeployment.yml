@@ -154,9 +154,10 @@ jobs:
 
       - name: Deploy Api Gateway
         run: |
-          aws apigatewayv2 create-deployment \
+          aws apigatewayv2 create-stage \
             --api-id $API_ID \
-            --description "Deployment for version ${{ github.sha }}"
+            --stage-name "prod" \
+            --deployment-id $(aws apigatewayv2 get-deployments --api-id $API_ID --query 'Items[0].DeploymentId' --output text)
 
       - name: Create Api Gateway Stage
         run: |
