@@ -64,6 +64,15 @@ jobs:
 
     - name: Show Build Artifacts
       run: ls -R ./dist
+
+    #Save Api ID as output
+    - name: Set Api ID as output
+      id: set-api-id
+      run: echo "::set-output name=api_id::${{ env.API_ID }}"
+
+    outputs:
+      api_id: ${{ steps.set-api-id.outputs.api_id }}
+      
   
   deploy:
     needs: build
@@ -71,9 +80,12 @@ jobs:
 
     steps: 
       - uses: actions/checkout@v4
+
+      #download outputs
+      - name: Download Api_ID from outputs build
+        run: echo "API_ID=${{ needs.build.outputs.api_id }}" >> $GITHUB.ENV
       
       # Download artifacts
-      
       - name: Download Frontend Artifacts
         uses: actions/download-artifact@v3
         with: 
