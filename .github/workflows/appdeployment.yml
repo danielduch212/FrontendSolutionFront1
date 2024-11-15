@@ -156,7 +156,7 @@ jobs:
 
       #Test
       - name: Show Api Id
-        run: echo "$API_ID" 
+        run: echo "${API_ID}" 
 
       #Create Api Gateway integration with lambda
       - name: Create Api Gateway Integration 
