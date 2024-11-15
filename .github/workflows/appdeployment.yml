@@ -154,6 +154,10 @@ jobs:
             --runtime dotnet6 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
 
+      #Test
+      - name: Show Api Id
+        run: echo "$API_ID" 
+
       #Create Api Gateway integration with lambda
       - name: Create Api Gateway Integration 
         run: |
@@ -171,7 +175,9 @@ jobs:
 
           
           echo "INTEGRATION_ID=$INTEGRATION_ID" >> $GITHUB_ENV
-          
+
+      
+        
       #Create Api Gateway Route
       - name: Create Api Gateway Route
         run: |
