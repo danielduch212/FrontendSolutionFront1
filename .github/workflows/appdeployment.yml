@@ -83,7 +83,7 @@ jobs:
 
       #download outputs
       - name: Download Api_ID from outputs build
-        run: echo "API_ID=${{ needs.build.outputs.api_id }}" >> $GITHUB.ENV
+        run: echo "API_ID=${{ needs.build.outputs.api_id }}" >> $GITHUB_ENV
       
       # Download artifacts
       - name: Download Frontend Artifacts
