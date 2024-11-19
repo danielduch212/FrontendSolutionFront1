@@ -150,8 +150,8 @@ jobs:
           aws lambda create-function \
             --function-name lambda-${{ github.sha }} \
             --zip-file fileb://./backend/app-deployment-package.zip \
-            --handler MyApp::MyApp.Function::FunctionHandler \
-            --runtime dotnet6 \
+            --handler FrontendSolutionLogic1::FrontendSolutionLogic1.LambdaEntryPoint::FunctionHandlerAsync \
+            --runtime dotnet8.0 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
 
       #Test
