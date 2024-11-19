@@ -151,7 +151,7 @@ jobs:
             --function-name lambda-${{ github.sha }} \
             --zip-file fileb://./backend/app-deployment-package.zip \
             --handler FrontendSolutionLogic1::FrontendSolutionLogic1.LambdaEntryPoint::FunctionHandlerAsync \
-            --runtime dotnet8.0 \
+            --runtime dotnet8 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
 
       #Test
