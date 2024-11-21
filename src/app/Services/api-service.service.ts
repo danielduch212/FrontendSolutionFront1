@@ -8,7 +8,7 @@ import { WeatherForecast } from '../Model/WeatherForecast';
   providedIn: 'root',
 })
 export class ApiServiceService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + '/WeatherForecast';
 
   constructor(private httpClient: HttpClient) {}
 
