@@ -124,7 +124,7 @@ jobs:
                     "S3OriginConfig": {
                       "OriginAccessIdentity": "" 
                     },
-                    "OriginPath": "${{ github.sha }}/frontend/frontend-solution-front1"
+                    "OriginPath": "/${{ github.sha }}/frontend/frontend-solution-front1"
                   }
                 ],
                 "Quantity": 1
