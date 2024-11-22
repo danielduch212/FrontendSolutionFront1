@@ -138,11 +138,45 @@ jobs:
                 "CachePolicyId": "d96ead7e-e388-403e-a904-5871a20c36b5" 
               },
               "Enabled": true,
-              "DefaultRootObject": "${{ github.sha }}/frontend/frontend-solution-front1/browser/index.html"
+              "DefaultRootObject": "${{ github.sha }}/index.html"
             }' \
             --query 'Distribution.Id' --output text)
           echo "CloudFront Distribution ID: $DISTRIBUTION_ID"
-        
+          echo "DISTRIBUTION_ID=$DISTRIBUTION_ID" >> $GITHUB_ENV
+
+          
+      - name: Configure Bucket S3 policy for CloudFront Distribution
+        run: |
+          BUCKET_NAME="frontendsolutionbucket"
+          DISTRIBUTION_ID=$DISTRIBUTION_ID
+          # Generowanie nowej bucket policy
+          NEW_POLICY=$(cat <<EOF
+          {
+            "Version": "2008-10-17",
+            "Id": "PolicyForCloudFront",
+            "Statement": [
+            {
+              "Sid": "AllowCloudFrontServicePrincipal",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudfront.amazonaws.com"
+              },
+              "Action": "s3:GetObject",
+              "Resource": "arn:aws:s3:::${BUCKET_NAME}/*",
+              "Condition": {
+                "StringEquals": {
+                  "AWS:SourceArn": "arn:aws:cloudfront::${{ secrets.AWS_ACCOUNT_ID }}:distribution/${DISTRIBUTION_ID}"
+                }
+              }
+            }
+            ]
+          }
+          EOF
+          )  
+          echo "Updating bucket policy for $BUCKET_NAME..."
+          aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy "$NEW_POLICY"
+          echo "Bucket policy updated successfully."
+          
       #Create Lambda AspNet Core Server 
       - name: Create Lambda
         run: |
@@ -152,10 +186,6 @@ jobs:
             --handler FrontendSolutionLogic1::FrontendSolutionLogic1.LambdaEntryPoint::FunctionHandlerAsync \
             --runtime dotnet8 \
             --role arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda-execution-role
-
-      #Test
-      - name: Show Api Id
-        run: echo "${API_ID}" 
 
       #Create Api Gateway integration with lambda
       - name: Create Api Gateway Integration 
@@ -185,6 +215,7 @@ jobs:
             --statement-id "AllowAPIGatewayInvoke" \
             --action "lambda:InvokeFunction" \
             --source-arn "arn:aws:execute-api:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:$API_ID/*/*/*"
+            
       - name: Configure Api Gateway
         run: |
           aws apigatewayv2 update-api \
@@ -215,6 +246,11 @@ jobs:
       - name: Output API Gateway URL
         run: |
           echo "API Gateway URL: https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com/prod"
+
+      - name: Output CloudFront Distribution URL
+        run: |
+          echo aws cloudfront get-distribution --id $DISTRIBUTION_ID --query "Distribution.DomainName" --output text
+           
           
 
   
