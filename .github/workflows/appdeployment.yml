@@ -106,7 +106,7 @@ jobs:
         
       - name: Upload hashed backend and frontend to S3
         run: |
-          aws s3 cp ./dist s3://frontendsolutionbucket/${{ github.sha }}/frontend/ --recursive
+          aws s3 cp ./dist/FrontendSolutionFront1/browser s3://frontendsolutionbucket/${{ github.sha }}/ --recursive
           aws s3 cp ./backend s3://frontendsolutionbucket/${{ github.sha }}/backend/ --recursive
    
       # Create CloudFront distribution
