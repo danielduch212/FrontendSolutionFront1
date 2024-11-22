@@ -123,7 +123,7 @@ jobs:
                     "DomainName": "frontendsolutionbucket.s3.amazonaws.com",
                     "S3OriginConfig": {
                       "OriginAccessIdentity": "" 
-                    }
+                    },
                     "OriginPath": "${{ github.sha }}/frontend/frontend-solution-front1"
                   }
                 ],
