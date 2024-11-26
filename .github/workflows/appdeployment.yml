@@ -33,9 +33,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: check AWS OACs
-      run: aws cloudfront list-origin-access-controls 
       
     - name: Create Api Gateway
       run: |
@@ -62,8 +59,6 @@ jobs:
         name: Frontend Artifacts
         path: ./dist
 
-    - name: Show Build Artifacts
-      run: ls -R ./dist
 
     #Save Api ID as output
     - name: Set Api ID as output
@@ -242,14 +237,13 @@ jobs:
             --deployment-id $(aws apigatewayv2 get-deployments --api-id $API_ID --query 'Items[0].DeploymentId' --output text)
             
       
-      # Output API Gateway URL
-      - name: Output API Gateway URL
-        run: |
-          echo "API Gateway URL: https://${API_ID}.execute-api.${{ secrets.AWS_REGION }}.amazonaws.com/prod"
-
       - name: Output CloudFront Distribution URL
         run: |
-          echo aws cloudfront get-distribution --id $DISTRIBUTION_ID --query "Distribution.DomainName" --output text
+          CLOUDFRONT_URL=$(aws cloudfront get-distribution \
+            --id $DISTRIBUTION_ID \
+            --query "Distribution.DomainName" \
+            --output text)
+          echo "CloudFront Distribution URL: https://${CLOUDFRONT_URL}"
            
           
 
