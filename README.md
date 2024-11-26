@@ -1,6 +1,8 @@
 # FrontendSolutionFront
 
-This is part two of my Solution for frontend developers. So there is diagram which presents workflow of Ci/CD process performed by GithubActions (link):
+This is part two of my Solution for frontend developers. So there is diagram which presents workflow of Ci/CD process performed by GithubActions :
+
+Github action workflow file link: [github action](https://github.com/danielduch212/FrontendSolutionFront1/actions/runs/12036560723/workflow)
 
 ![Pusty diagram](https://github.com/user-attachments/assets/3c325551-0989-4edf-b70e-a74ebffcffca)
 
